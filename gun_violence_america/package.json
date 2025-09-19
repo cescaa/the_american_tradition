@@ -6,18 +6,22 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:data": "node scripts csv_to_json.js src/app/data/school-shooting-incident.csv"
   },
   "dependencies": {
+    "@nivo/core": "^0.99.0",
+    "@nivo/line": "^0.99.0",
+    "next": "15.5.3",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "next": "15.5.3"
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
-    "@eslint/eslintrc": "^3"
+    "papaparse": "^5.5.3",
+    "tailwindcss": "^4"
   }
 }
