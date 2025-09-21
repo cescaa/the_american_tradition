@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "build:data": "node scripts csv_to_json.js src/app/data/school-shooting-incident.csv"
+    "lint": "eslint"
   },
   "dependencies": {
     "@nivo/core": "^0.99.0",
@@ -22,6 +21,8 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "papaparse": "^5.5.3",
-    "tailwindcss": "^4"
+    "tailwindcss": "^4",
+    "topojson-client": "^3.1.0",
+    "us-atlas": "^3.0.1"
   }
 }

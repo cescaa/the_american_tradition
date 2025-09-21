@@ -1,27 +1,22 @@
-// node scripts/csv_to_json.js src\app\data\giffords-gun-law-scorecard.csv testname.json
-
+// "node scripts csv_to_json.js src/app/data/school-shooting-incident.csv"
 // load node utilities + papaparse
 const fs = require("fs"); // to read and write files
 const path = require("path");
 const Papa = require("papaparse");
 
-// declare CLI args for CSV file only (input + output file paths)
+// declare CLI args for CSV file only (input)
 const inPath = process.argv[2];
-const outPath = process.argv[3];
 
 // error warning
-if (!inPath || !outPath) {
-  console.error("Missing filepath arguments for CSV data.");
+if (!inPath) {
+  console.error("Missing filepath argument for CSV data.");
   process.exit(1);
 }
 
 // generate directory and name for output JSON file and base
 const outDir = path.join("src", "app", "data");
-//const baseName = path.parse(inPath).name; // get CSV's filename without 'csv' extension
-const outPathFormatted = path.join(
-  outDir,
-  `${path.parse(outPath).name}-${Date.now()}.json`
-); // create ouput filename using baseName and current date
+const baseName = path.parse(inPath).name; // get CSV's filename without 'csv' extension
+const outPath = path.join(outDir, `${baseName}-${Date.now()}.json`); // create ouput filename using baseName and current date
 
 // create output folder if it doesn't already exist
 fs.mkdirSync(outDir, { recursive: true });
@@ -39,7 +34,7 @@ const papaStream = Papa.parse(Papa.NODE_STREAM_INPUT, {
 
 // create streams to read/write CSV/JSON files piece by piece
 const rs = fs.createReadStream(inPath, "utf8");
-const ws = fs.createWriteStream(outPathFormatted, "utf8");
+const ws = fs.createWriteStream(outPath, "utf8");
 
 let first = true;
 let rowCount = 0;
@@ -56,10 +51,10 @@ papaStream.on("data", (row) => {
 papaStream.on("end", () => {
   ws.write("\n]\n");
   ws.end(() => {
-    //const stable = path.join(outDir, "shootingsAmerica.json"); // fixed name
-    //fs.copyFileSync(outPath, stable); // overwrite stable copy
-    console.log(`Wrote ${outPathFormatted} (${rowCount} rows)`);
-    //console.log(`Updated ${stable}`);
+    const stable = path.join(outDir, "shootingsAmerica.json"); // fixed name
+    fs.copyFileSync(outPath, stable); // overwrite stable copy
+    console.log(`Wrote ${outPath} (${rowCount} rows)`);
+    console.log(`Updated ${stable}`);
   });
 });
 
