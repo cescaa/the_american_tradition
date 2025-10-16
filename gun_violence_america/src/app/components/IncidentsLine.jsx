@@ -2,6 +2,9 @@
 import { ResponsiveLine } from "@nivo/line";
 
 export default function IncidentsLine({ series }) {
+  const tickValues = (series[0]?.data || [])
+    .filter((p) => Number(p.x) % 5 === 0)
+    .map((p) => String(p.x));
   return (
     <div className="h-180">
       <ResponsiveLine
@@ -9,6 +12,7 @@ export default function IncidentsLine({ series }) {
         margin={{ top: 40, right: 40, bottom: 50, left: 60 }}
         xScale={{ type: "point" }}
         yScale={{ type: "linear", min: "auto", max: "auto" }}
+        axisBottom={{ tickValues, tickPadding: 2 }}
         lineWidth={2}
         pointSize={12}
         enableArea
@@ -26,7 +30,11 @@ export default function IncidentsLine({ series }) {
             fill: "#111",
           },
           grid: {
-            line: { stroke: "#FFC0CB", strokeWidth: 2, strokeDasharray: "4 8" },
+            line: {
+              stroke: "#FFC0CB",
+              strokeWidth: 1,
+              strokeDasharray: "4 8",
+            },
           },
         }}
       />
