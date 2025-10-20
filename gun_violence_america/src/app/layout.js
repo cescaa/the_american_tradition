@@ -1,6 +1,24 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Cormorant, Cormorant_SC } from "next/font/google";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
 import "./globals.css";
 
+config.autoAddCss = false; // do NOT add CSS to fontAwesome automatically
+
+const cormorant = Cormorant({
+  variable: "--font-cormorant",
+  weight: ["300", "400", "600", "700"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+});
+
+const cormorantSC = Cormorant_SC({
+  variable: "--font-cormorant-sc",
+  weight: ["300", "400", "600", "700"],
+  subsets: ["latin"],
+});
+
+/*
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -10,6 +28,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+*/
 
 export const metadata = {
   title: "Create Next App",
@@ -20,7 +39,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${cormorant.variable} ${cormorantSC.variable} antialiased`}
       >
         {children}
       </body>
