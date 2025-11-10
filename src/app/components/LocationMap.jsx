@@ -34,6 +34,7 @@ export default function LocationMap({
 
       const { Map } = await google.maps.importLibrary("maps");
       const { Marker } = await google.maps.importLibrary("marker");
+      const { ColorScheme } = await google.maps.importLibrary("core");
 
       if (cancelled || !mapRef.current) return;
 
@@ -42,6 +43,10 @@ export default function LocationMap({
         center,
         zoom,
         mapId,
+        colorScheme: ColorScheme.DARK,
+        clickableIcons: false,
+        mapTypeControl: false,
+        streetViewControl: false,
       });
 
       new Marker({ position: center, map });
