@@ -5,9 +5,12 @@ import {
   faDove,
 } from "@fortawesome/free-solid-svg-icons";
 
-export default function SearchResults() {
+export default function SearchResults({}) {
   return (
     <div className="col-span-3  flex flex-col gap-4">
+      <p className="text-tertiary">
+        <span className="font-bold text-lg ">12345</span> school shootings found
+      </p>
       {[...Array(12)].map((elem, i) => (
         <ResultCard
           key={i}
@@ -26,12 +29,12 @@ export default function SearchResults() {
 // individual result card
 function ResultCard({ school, city, state, date, summary }) {
   return (
-    <div className="p-4 flex flex-col gap-2">
+    <div className="p-4 flex flex-col gap-2 cursor-pointer hover:bg-tertiary/10">
       <h3 className="text-secondary">{school}</h3>
       <div className="flex gap-8">
         <IconLabelDetail icon={faLocationDot} text={`${city}, ${state}`} />
         <IconLabelDetail icon={faCalendar} text={date} />
-        <IconLabelDetail icon={faDove} text="1" />
+        <IconLabelDetail icon={faDove} text="1 Victims Killed" />
       </div>
       <p>{summary}</p>
     </div>

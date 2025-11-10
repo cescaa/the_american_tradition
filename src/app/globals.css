@@ -57,6 +57,10 @@
     @apply text-lg;
   }
 
+  small {
+    @apply text-sm;
+  }
+
   strong {
     @apply font-semibold;
   }

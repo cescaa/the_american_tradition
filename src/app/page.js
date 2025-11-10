@@ -33,6 +33,7 @@ export default function Home() {
         <Filters />
         <SearchResults />
         <div className="sticky top-8 max-h-screen overflow-y-scroll scrollbar-hide w-full col-span-3 p-8 pb-16 flex flex-col gap-4 items-center border border-accent">
+          <small className="w-full text-right text-tertiary">#1234567890</small>
           <h1>Wilson Elementary School</h1>
           <div className="w-full grid grid-cols-3 gap-y-1">
             <IconLabelDetail
