@@ -1,7 +1,10 @@
 import { Cormorant, Cormorant_SC } from "next/font/google";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
+import "react-datepicker/dist/react-datepicker.css";
 import "./globals.css";
+import "./datepicker-overrides.css";
+import MainMenu from "./components/MainMenu";
 
 config.autoAddCss = false; // do NOT add CSS to fontAwesome automatically
 
@@ -41,6 +44,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${cormorant.variable} ${cormorantSC.variable} antialiased`}
       >
+        <MainMenu />
         {children}
       </body>
     </html>
