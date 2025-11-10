@@ -1,8 +1,10 @@
 "use client";
 import { useEffect } from "react";
 import DatePicker from "react-datepicker";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 
-export default function DateInput({ dateType = "", placeholderDate }) {
+export default function DateInput({}) {
   useEffect(() => {
     const s = document.createElement("style");
     s.innerHTML = `
@@ -22,9 +24,26 @@ export default function DateInput({ dateType = "", placeholderDate }) {
 
   return (
     <div>
-      <h4>{dateType} Date</h4>
+      <div className="flex gap-1 items-center">
+        <FontAwesomeIcon icon={faCalendar} className={`text-primary text-sm`} />
+
+        <h4>Date Range</h4>
+      </div>
+      <small>Start Date</small>
       <DatePicker
-        placeholderText={`Select a ${dateType.toLowerCase()} date`}
+        placeholderText={`Select a start date`}
+        dateFormat="MMMM d, yyyy" // -> August 25, 2025
+        wrapperClassName="w-full"
+        className="focus:outline-none w-full border-b border-primary text-lg bg-accent placeholder-tertiary p-1"
+        calendarClassName="my-datepicker"
+        minDate={new Date(2025, 0, 1)} // Jan = 0
+        maxDate={new Date(2025, 7, 29)} // Aug = 7
+        isClearable
+        showPopperArrow={false}
+      />
+      <small>End Date</small>
+      <DatePicker
+        placeholderText={`Select an end date`}
         dateFormat="MMMM d, yyyy" // -> August 25, 2025
         wrapperClassName="w-full"
         className="focus:outline-none w-full border-b border-primary text-lg bg-accent placeholder-tertiary p-1"
