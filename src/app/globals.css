@@ -87,7 +87,7 @@
 @layer utilities {
   /*** left/right margins for main content on most pages ***/
   .main-side-padding {
-    @apply 3xl:px-40 xl:px-20 lg:px-10 px-4;
+    @apply 3xl:px-40 lg:px-10 px-4;
   }
 }
 
