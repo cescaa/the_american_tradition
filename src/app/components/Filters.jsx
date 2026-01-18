@@ -2,12 +2,82 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDove } from "@fortawesome/free-solid-svg-icons";
 import { US_STATES } from "../data/data";
+import DateInput from "./DateInput";
 
-export default function Filters({ children }) {
+export default function Filters({ setFilterParam }) {
+  const CLEARED = {
+    State: null,
+    victimsKilled: null,
+  };
+  const [pendingFilters, setPendingFilters] = useState(CLEARED); // stores the selected filter inputs before they're applied to the incidents
+
+  // When apply button is clicked, applyFilters() updates the filter string
+  // by creating a new paramerter obj and including values based on the values in pendingFilters.
+  const applyFilters = (pf) => {
+    const params = new URLSearchParams(); // create a NEW query param object, so no need to delete old filters
+
+    // if pendingFilters contains values, include them in the query params
+    if (pf.State) params.set("State", pf.State);
+    if (pf.victimsKilled === "gte1") {
+      params.set("Victims_Killed[gte]", "1");
+    } else if (pf.victimsKilled === "0") {
+      params.set("Victims_Killed", "0");
+    }
+    setFilterParam(params.toString()); // update the filter string used by the API
+  };
+
+  // When "Clear All" btn is clicked, clear all filters
+  const clearFilters = () => {
+    setPendingFilters(CLEARED);
+    applyFilters(CLEARED);
+  };
+
+  // When user selects a U.S. state, update pendingFilters
+  const handleStateSelect = (stateCode) => {
+    setPendingFilters((prev) => ({
+      ...prev,
+      State: stateCode,
+    }));
+  };
+
+  // When user selects num of victims, update pendingFilters
+  const handleVictimSelect = (val) => {
+    setPendingFilters((prev) => ({
+      ...prev,
+      victimsKilled: val,
+    }));
+  };
+
   return (
     <div className="col-span-1 flex flex-col gap-4">
       <h2>Filters</h2>
-      {children}
+      <Input
+        label="State"
+        inputType="text"
+        dataOptions={US_STATES}
+        onStateSelect={handleStateSelect}
+        selectedState={pendingFilters.State} // passes U.S. State or null so parent can clear input when "Clear All" is clicked
+      />
+      <DateInput setFilterParam={setFilterParam} />
+      <RadioInput
+        onVictimSelect={handleVictimSelect}
+        selectedVictim={pendingFilters.victimsKilled}
+      />
+
+      <div className="flex mt-4 justify-between">
+        <button
+          className="w-fit text-secondary border border-secondary p-1 px-4 cursor-pointer hover:bg-accent"
+          onClick={() => applyFilters(pendingFilters)}
+        >
+          Apply
+        </button>
+        <button
+          className="w-fit text-secondary border-b border-secondary p-1 cursor-pointer hover:bg-accent"
+          onClick={clearFilters}
+        >
+          Clear All
+        </button>
+      </div>
     </div>
   );
 }

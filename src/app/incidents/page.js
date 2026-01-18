@@ -3,7 +3,6 @@
 "use client";
 import Filters from "../components/Filters";
 import SearchResults from "../components/SearchResults";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Script from "next/script";
 import {
   faCalendar,
@@ -17,20 +16,12 @@ import {
 import IconLabelDetail from "../components/IconLabelDetail";
 import LocationMap from "../components/LocationMap";
 import { useEffect, useState } from "react";
-import { Input } from "../components/Filters";
-import DateInput from "../components/DateInput";
-import { RadioInput } from "../components/Filters";
-import { US_STATES, API_ENDPOINT } from "../data/data";
+import { API_ENDPOINT } from "../data/data";
 
 export default function Incidents() {
-  const CLEARED = {
-    State: null,
-    victimsKilled: null,
-  };
   const [results, setResults] = useState([]); // all incidents from api data
   const [selectedResult, setSelectedResult] = useState([]); // user-selected incident
   const [filterParam, setFilterParam] = useState(""); // string-formatted parameters for endpoint
-  const [pendingFilters, setPendingFilters] = useState(CLEARED); // stores the selected filter inputs before they're applied to the incidents
 
   // when page renders, fetch all incidents from api
   useEffect(
@@ -46,43 +37,6 @@ export default function Incidents() {
     },
     [filterParam], // re-fetch data with selected parameters when filters change
   );
-
-  // When apply button is clicked, applyFilters() updates the filter string
-  // by creating a new paramerter obj and including values based on the values in pendingFilters.
-  const applyFilters = (pf) => {
-    const params = new URLSearchParams(); // create a NEW query param object, so no need to delete old filters
-
-    // if pendingFilters contains values, include them in the query params
-    if (pf.State) params.set("State", pf.State);
-    if (pf.victimsKilled === "gte1") {
-      params.set("Victims_Killed[gte]", "1");
-    } else if (pf.victimsKilled === "0") {
-      params.set("Victims_Killed", "0");
-    }
-    setFilterParam(params.toString()); // update the filter string used by the API
-  };
-
-  // When "Clear All" btn is clicked, clear all filters
-  const clearFilters = () => {
-    setPendingFilters(CLEARED);
-    applyFilters(CLEARED);
-  };
-
-  // When user selects a U.S. state, update pendingFilters
-  const handleStateSelect = (stateCode) => {
-    setPendingFilters((prev) => ({
-      ...prev,
-      State: stateCode,
-    }));
-  };
-
-  // When user selects num of victims, update pendingFilters
-  const handleVictimSelect = (val) => {
-    setPendingFilters((prev) => ({
-      ...prev,
-      victimsKilled: val,
-    }));
-  };
 
   return (
     <>
@@ -101,42 +55,12 @@ export default function Incidents() {
       />
       <main className="main-side-padding py-8 grid gap-4 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] items-start">
         {/* COLUMN 1: Filters */}
-        <Filters>
-          <Input
-            label="State"
-            inputType="text"
-            dataOptions={US_STATES}
-            onStateSelect={handleStateSelect}
-            selectedState={pendingFilters.State} // passes U.S. State or null so parent can clear input when "Clear All" is clicked
-          />
-          <DateInput setFilterParam={setFilterParam} />
-          <RadioInput
-            onVictimSelect={handleVictimSelect}
-            selectedVictim={pendingFilters.victimsKilled}
-          />
-
-          <div className="flex mt-4 justify-between">
-            <button
-              className="w-fit text-secondary border border-secondary p-1 px-4 cursor-pointer hover:bg-accent"
-              onClick={() => applyFilters(pendingFilters)}
-            >
-              Apply
-            </button>
-            <button
-              className="w-fit text-secondary border-b border-secondary p-1 cursor-pointer hover:bg-accent"
-              onClick={clearFilters}
-            >
-              Clear All
-            </button>
-          </div>
-        </Filters>
-
+        <Filters setFilterParam={setFilterParam} />
         {/* COLUMN 2: Search Results */}
         <SearchResults
           results={results}
           setSelectedResult={setSelectedResult}
         />
-
         {/* COLUMN 3: Detailed info on selected incident */}
         <div className="sticky top-8 max-h-screen overflow-y-scroll scrollbar-hide w-full col-span-3 p-8 pb-16 flex flex-col gap-4 items-center border border-accent">
           <small className="w-full text-right text-tertiary">#1234567890</small>
