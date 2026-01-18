@@ -1,3 +1,5 @@
+export const API_ENDPOINT = `https://nodejs-practice-delta.vercel.app/v1/incidents/?`;
+
 export const US_STATES = [
   { name: "Alabama", code: "AL" },
   { name: "Alaska", code: "AK" },

@@ -1,10 +1,12 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 
-export default function DateInput({}) {
+// &Date[gte]=2024-01-01&Date[lte]=2024-12-31
+
+export default function DateInput({ setFilterParam }) {
   useEffect(() => {
     const s = document.createElement("style");
     s.innerHTML = `
@@ -22,6 +24,50 @@ export default function DateInput({}) {
     return () => document.head.removeChild(s);
   }, []);
 
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  const stripParam = (prev, keyRegex) => {
+    if (!prev) return "";
+    return prev
+      .replace(keyRegex, "") // remove the param
+      .replace(/^&/, "") // remove leading &
+      .replace(/&&/g, "&") // clean double &&
+      .trim();
+  };
+
+  const handleSelectStart = (date) => {
+    // if no date selected, clear date input and remove start date filter
+    if (!date) {
+      setStartDate(null);
+      setFilterParam((prev) => stripParam(prev, /&?Date\[gte\]=[^&]*/g));
+      return;
+    }
+
+    setStartDate(date);
+    // if date selected, format it to "Month dd, yyyy",  set input value, and apply filter
+    const formatted = date.toISOString().split("T")[0];
+    setFilterParam((prev) => {
+      let base = stripParam(prev, /&?Date\[gte\]=[^&]*/g);
+      return base ? `${base}&Date[gte]=${formatted}` : `Date[gte]=${formatted}`;
+    });
+  };
+
+  const handleSelectEnd = (date) => {
+    if (!date) {
+      setEndDate("");
+      setFilterParam((prev) => stripParam(prev, /&?Date\[lte\]=[^&]*/g));
+      return;
+    }
+
+    setEndDate(date);
+    const formatted = date.toISOString().split("T")[0];
+    setFilterParam((prev) => {
+      let base = stripParam(prev, /&?Date\[lte\]=[^&]*/g);
+      return base ? `${base}&Date[lte]=${formatted}` : `Date[lte]=${formatted}`;
+    });
+  };
+
   return (
     <div>
       <div className="flex gap-1 items-center">
@@ -31,6 +77,8 @@ export default function DateInput({}) {
       </div>
       <small>Start Date</small>
       <DatePicker
+        selected={startDate}
+        onChange={(date) => handleSelectStart(date)}
         placeholderText={`Select a start date`}
         dateFormat="MMMM d, yyyy" // -> August 25, 2025
         wrapperClassName="w-full"
@@ -43,6 +91,8 @@ export default function DateInput({}) {
       />
       <small>End Date</small>
       <DatePicker
+        selected={endDate}
+        onChange={(date) => handleSelectEnd(date)}
         placeholderText={`Select an end date`}
         dateFormat="MMMM d, yyyy" // -> August 25, 2025
         wrapperClassName="w-full"
@@ -53,6 +103,7 @@ export default function DateInput({}) {
         isClearable
         showPopperArrow={false}
       />
+      {console.log(startDate)}
     </div>
   );
 }
