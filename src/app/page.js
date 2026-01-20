@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ResponsiveLine } from "@nivo/line";
+import { ResponsiveBar } from "@nivo/bar";
+import { COUNTRY_SHOOTINGS } from "./data/data";
 
 export default function Home() {
   const [chartData, setChartData] = useState([]);
@@ -11,7 +13,7 @@ export default function Home() {
       const END_YEAR = 2024;
 
       const res = await fetch(
-        `https://nodejs-practice-delta.vercel.app/v1/incidents/`
+        `https://nodejs-practice-delta.vercel.app/v1/incidents/`,
       );
 
       if (!res.ok) throw new Error("Failed to fetch incidents");
@@ -86,9 +88,14 @@ export default function Home() {
           </div>
         </div>
       </div>
+      {/* Line Graph */}
       <div className="flex w-full my-8">
-        <div className="w-1/2">
-          <h1>16 to 338:</h1>
+        <div className="w-1/2 flex flex-col justify-center">
+          <h1>
+            From Rare to Routine:
+            <br />
+            School Shootings in America, 1974–2024
+          </h1>
           <p className="w-150">
             Shootings in American K–12 schools have surged from 16 incidents in
             1974 to 338 in 2024, the second highest level ever recorded, just
@@ -99,16 +106,6 @@ export default function Home() {
             occurring annually. Texas, Florida, and California consistently
             report the largest numbers.
           </p>
-          <Image
-            src="/img/robb-shooting.webp" // path is from /public
-            alt="school shooting"
-            width={400}
-            height={400}
-            className=" my-4"
-            style={{
-              objectFit: "contain", // fills the box, cropping overflow
-            }}
-          />
         </div>
         <div className="min-h-140 w-1/2">
           <ResponsiveLine
@@ -152,7 +149,7 @@ export default function Home() {
               legendPosition: "middle",
               tickValues: Array.from(
                 { length: Math.floor((2024 - 1974) / 5) + 1 },
-                (_, i) => 1974 + i * 5
+                (_, i) => 1974 + i * 5,
               ),
             }}
             axisLeft={{
@@ -222,6 +219,57 @@ export default function Home() {
               },
             }}
           />
+        </div>
+      </div>
+      {/* Graph 2 */}
+      <div className="flex flex-col items-center w-full my-8 text-center ">
+        <h1>America Has More School Shootings Than Any Other Country</h1>
+        <p className="w-150">
+          According to a review of global school shooting data compiled by CNN,
+          the United States experienced 288 school shooting incidents between
+          January 2009 and May 2018, a total that far exceeds those of other
+          countries included in the same dataset. During that period, the
+          country with the next highest count — Mexico — recorded only eight
+          such incidents, and many other nations documented only a handful or
+          none at all. This pattern is consistent with broader analyses showing
+          that, in available international data, the United States has more
+          recorded school shootings than any other country.
+        </p>
+        <div className="w-full grid grid-cols-5 gap-8 my-8">
+          {COUNTRY_SHOOTINGS.map((c, i) => (
+            <div
+              key={i}
+              className={`flex items-center h-full border-0 border-accent ${i === 0 ? "row-span-4 flex-col" : ""}`}
+            >
+              <div
+                className={`relative overflow-x-hidden ${i === 0 ? "w-full" : "w-1/2"}`}
+                style={{
+                  height: i === 0 ? 200 : 100,
+                }}
+              >
+                <Image
+                  src="/img/school-shooting-lockdowns.webp"
+                  alt="Example image"
+                  fill
+                  style={{
+                    objectFit: "cover", // fills the box, cropping overflow
+                    objectPosition: "0", // which part of the image to keep
+                  }}
+                />
+              </div>
+
+              <div
+                className={`text-center w-1/2 ${i === 0 ? "text-xl" : "text-sm"}`}
+              >
+                <div
+                  className={`font-cor-sc  ${i === 0 ? "text-8xl" : "text-4xl"}`}
+                >
+                  {c.count}
+                </div>
+                {`${c.country}`}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

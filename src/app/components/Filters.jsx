@@ -11,8 +11,11 @@ export default function Filters({ setFilterParam }) {
     startDate: null,
     endDate: null,
   };
+
+  // react-datepicker only accepts Date objects for its selected value
   const [startDateObj, setStartDateObj] = useState(null);
   const [endDateObj, setEndDateObj] = useState(null);
+
   const [pendingFilters, setPendingFilters] = useState(CLEARED); // stores the selected filter inputs before they're applied to the incidents
 
   // When apply button is clicked, applyFilters() updates the filter string

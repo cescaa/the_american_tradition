@@ -52,3 +52,23 @@ export const US_STATES = [
   { name: "Wisconsin", code: "WI" },
   { name: "Wyoming", code: "WY" },
 ];
+
+export const COUNTRY_SHOOTINGS = [
+  { country: "United States of America", count: 288 },
+  { country: "Mexico", count: 8 },
+  { country: "South Africa", count: 6 },
+  { country: "India", count: 5 },
+  { country: "Canada", count: 2 },
+  { country: "France", count: 2 },
+  { country: "Russia", count: 1 },
+  { country: "Germany", count: 1 },
+  { country: "Greece", count: 1 },
+  { country: "China", count: 1 },
+  { country: "Spain", count: 0 },
+  { country: "Australia", count: 0 },
+  { country: "Switzerland", count: 0 },
+  { country: "Japan", count: 0 },
+  { country: "Netherlands", count: 0 },
+  { country: "Argentina", count: 0 },
+  { country: "United Kingdom", count: 0 },
+];
