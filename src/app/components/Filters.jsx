@@ -8,7 +8,11 @@ export default function Filters({ setFilterParam }) {
   const CLEARED = {
     State: null,
     victimsKilled: null,
+    startDate: null,
+    endDate: null,
   };
+  const [startDateObj, setStartDateObj] = useState(null);
+  const [endDateObj, setEndDateObj] = useState(null);
   const [pendingFilters, setPendingFilters] = useState(CLEARED); // stores the selected filter inputs before they're applied to the incidents
 
   // When apply button is clicked, applyFilters() updates the filter string
@@ -18,6 +22,15 @@ export default function Filters({ setFilterParam }) {
 
     // if pendingFilters contains values, include them in the query params
     if (pf.State) params.set("State", pf.State);
+
+    if (pf.startDate) params.set("Date[gte]", pf.startDate);
+    if (pf.endDate) params.set("Date[lte]", pf.endDate);
+
+    // optional safety check
+    if (pf.startDate && pf.endDate && pf.startDate > pf.endDate) {
+      params.delete("Date[lte]");
+    }
+
     if (pf.victimsKilled === "gte1") {
       params.set("Victims_Killed[gte]", "1");
     } else if (pf.victimsKilled === "0") {
@@ -40,12 +53,40 @@ export default function Filters({ setFilterParam }) {
     }));
   };
 
+  // When user selects start date, update pendingFilters
+  const handleStartDateSelect = (dateObj) => {
+    setStartDateObj(dateObj);
+
+    setPendingFilters((prev) => ({
+      ...prev,
+      startDate: formatDateString(dateObj),
+    }));
+  };
+
+  // When user selects end date, update pendingFilters
+  const handleEndDateSelect = (dateObj) => {
+    setEndDateObj(dateObj);
+
+    setPendingFilters((prev) => ({
+      ...prev,
+      endDate: formatDateString(dateObj),
+    }));
+  };
+
   // When user selects num of victims, update pendingFilters
   const handleVictimSelect = (val) => {
     setPendingFilters((prev) => ({
       ...prev,
       victimsKilled: val,
     }));
+  };
+
+  const formatDateString = (d) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+
+    return `${y}-${m}-${day}`;
   };
 
   return (
@@ -58,7 +99,12 @@ export default function Filters({ setFilterParam }) {
         onStateSelect={handleStateSelect}
         selectedState={pendingFilters.State} // passes U.S. State or null so parent can clear input when "Clear All" is clicked
       />
-      <DateInput setFilterParam={setFilterParam} />
+      <DateInput
+        onStartDateSelect={handleStartDateSelect}
+        onEndDateSelect={handleEndDateSelect}
+        selectedStartDate={startDateObj}
+        selectedEndDate={endDateObj}
+      />
       <RadioInput
         onVictimSelect={handleVictimSelect}
         selectedVictim={pendingFilters.victimsKilled}

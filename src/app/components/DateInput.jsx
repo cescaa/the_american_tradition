@@ -6,7 +6,12 @@ import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 
 // &Date[gte]=2024-01-01&Date[lte]=2024-12-31
 
-export default function DateInput({ setFilterParam }) {
+export default function DateInput({
+  onStartDateSelect,
+  onEndDateSelect,
+  selectedStartDate,
+  selectedEndDate,
+}) {
   useEffect(() => {
     const s = document.createElement("style");
     s.innerHTML = `
@@ -24,48 +29,25 @@ export default function DateInput({ setFilterParam }) {
     return () => document.head.removeChild(s);
   }, []);
 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-
-  const stripParam = (prev, keyRegex) => {
-    if (!prev) return "";
-    return prev
-      .replace(keyRegex, "") // remove the param
-      .replace(/^&/, "") // remove leading &
-      .replace(/&&/g, "&") // clean double &&
-      .trim();
-  };
-
   const handleSelectStart = (date) => {
     // if no date selected, clear date input and remove start date filter
     if (!date) {
-      setStartDate(null);
-      setFilterParam((prev) => stripParam(prev, /&?Date\[gte\]=[^&]*/g));
+      onStartDateSelect(null);
       return;
     }
-
-    setStartDate(date);
     // if date selected, format it to "Month dd, yyyy",  set input value, and apply filter
-    const formatted = date.toISOString().split("T")[0];
-    setFilterParam((prev) => {
-      let base = stripParam(prev, /&?Date\[gte\]=[^&]*/g);
-      return base ? `${base}&Date[gte]=${formatted}` : `Date[gte]=${formatted}`;
-    });
+    //const formatted = convertDateToLocal(date);
+    onStartDateSelect(date);
   };
 
   const handleSelectEnd = (date) => {
     if (!date) {
-      setEndDate("");
-      setFilterParam((prev) => stripParam(prev, /&?Date\[lte\]=[^&]*/g));
+      onEndDateSelect(null);
       return;
     }
 
-    setEndDate(date);
-    const formatted = date.toISOString().split("T")[0];
-    setFilterParam((prev) => {
-      let base = stripParam(prev, /&?Date\[lte\]=[^&]*/g);
-      return base ? `${base}&Date[lte]=${formatted}` : `Date[lte]=${formatted}`;
-    });
+    //const formatted = convertDateToLocal(date);
+    onEndDateSelect(date);
   };
 
   return (
@@ -77,7 +59,7 @@ export default function DateInput({ setFilterParam }) {
       </div>
       <small>Start Date</small>
       <DatePicker
-        selected={startDate}
+        selected={selectedStartDate}
         onChange={(date) => handleSelectStart(date)}
         placeholderText={`Select a start date`}
         dateFormat="MMMM d, yyyy" // -> August 25, 2025
@@ -91,7 +73,7 @@ export default function DateInput({ setFilterParam }) {
       />
       <small>End Date</small>
       <DatePicker
-        selected={endDate}
+        selected={selectedEndDate}
         onChange={(date) => handleSelectEnd(date)}
         placeholderText={`Select an end date`}
         dateFormat="MMMM d, yyyy" // -> August 25, 2025
@@ -103,7 +85,6 @@ export default function DateInput({ setFilterParam }) {
         isClearable
         showPopperArrow={false}
       />
-      {console.log(startDate)}
     </div>
   );
 }
