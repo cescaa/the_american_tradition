@@ -46,6 +46,8 @@ export default function Filters({ setFilterParam }) {
   const clearFilters = () => {
     setPendingFilters(CLEARED);
     applyFilters(CLEARED);
+    setStartDateObj(null);
+    setEndDateObj(null);
   };
 
   // When user selects a U.S. state, update pendingFilters

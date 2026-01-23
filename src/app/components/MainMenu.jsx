@@ -8,21 +8,17 @@ export default function MainMenu() {
       pathName: "#",
     },
     {
-      pageName: "Browse Shootings",
+      pageName: "Petition",
       pathName: "#",
     },
     {
-      pageName: "Stories",
-      pathName: "#",
-    },
-    {
-      pageName: "Stories",
+      pageName: "Sources",
       pathName: "#",
     },
   ];
 
   return (
-    <div className="main-side-padding w-full h-20 bg-background border-b border-primary py-2 flex items-center gap-36">
+    <div className="main-side-padding w-full h-24 bg-background border-b border-primary py-4 pt-6 flex items-center gap-36 fixed z-900">
       <SearchBar />
       <div className="flex-1 text-secondary">
         <ul className="flex font-cor-sc justify-between ">

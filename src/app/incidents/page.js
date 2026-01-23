@@ -1,17 +1,15 @@
 // https://nodejs-practice-delta.vercel.app/v1/incidents/?State=AZ
 
 "use client";
+import { useSearchParams } from "next/navigation";
 import Filters from "../components/Filters";
 import SearchResults from "../components/SearchResults";
 import Script from "next/script";
 import {
   faCalendar,
   faLocationDot,
-  faDove,
-  faExplosion,
-  faBurst,
-  faSuitcaseMedical,
   faSchool,
+  faCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import IconLabelDetail from "../components/IconLabelDetail";
 import LocationMap from "../components/LocationMap";
@@ -22,20 +20,28 @@ export default function Incidents() {
   const [results, setResults] = useState([]); // all incidents from api data
   const [selectedResult, setSelectedResult] = useState([]); // user-selected incident
   const [filterParam, setFilterParam] = useState(""); // string-formatted parameters for endpoint
+  const searchParams = useSearchParams(); // reads URL string of page
+  const searchQry = searchParams.get("search") ?? ""; // gets value of search field
+
+  const paramsObj = new URLSearchParams(filterParam);
+  if (searchQry) paramsObj.set("search", searchQry);
+
+  const queryString = paramsObj.toString();
+  const url = queryString ? `${API_ENDPOINT}${queryString}` : API_ENDPOINT;
 
   // when page renders, fetch all incidents from api
   useEffect(
     function () {
-      fetch(API_ENDPOINT + filterParam)
+      fetch(url)
         .then((res) => res.json())
         .then((d) => {
           setResults(d.data.incidents);
           if (d.data.incidents.length > 0)
             setSelectedResult(d.data.incidents[0]);
         });
-      console.log("FILTERPARAM: ", API_ENDPOINT + filterParam);
+      console.log("FILTERPARAM: ", url);
     },
-    [filterParam], // re-fetch data with selected parameters when filters change
+    [url], // re-fetch data with selected parameters when filters change
   );
 
   return (
@@ -53,7 +59,7 @@ export default function Incidents() {
           `,
         }}
       />
-      <main className="main-side-padding py-8 grid gap-4 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] items-start">
+      <main className="main-side-padding bg-background py-8 grid gap-4 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] items-start">
         {/* COLUMN 1: Filters */}
         <Filters setFilterParam={setFilterParam} />
         {/* COLUMN 2: Search Results */}
@@ -62,7 +68,7 @@ export default function Incidents() {
           setSelectedResult={setSelectedResult}
         />
         {/* COLUMN 3: Detailed info on selected incident */}
-        <div className="sticky top-8 max-h-screen overflow-y-scroll scrollbar-hide w-full col-span-3 p-8 pb-16 flex flex-col gap-4 items-center border border-accent">
+        <div className="sticky top-32 max-h-screen overflow-y-scroll scrollbar-hide w-full col-span-3 p-8 pb-16 flex flex-col gap-4 items-center border border-accent">
           <small className="w-full text-right text-tertiary">#1234567890</small>
           <h1>{selectedResult.School}</h1>
           <div className="w-full grid grid-cols-3 gap-y-1">
@@ -87,33 +93,32 @@ export default function Incidents() {
               textSize={3}
             />
             <IconLabelDetail
-              icon={faDove}
-              text="2 Victims Killed"
-              iconSize="text-sm"
-              textSize={3}
-            />
-            <IconLabelDetail
-              icon={faSuitcaseMedical}
-              text="3 Victims Injured"
-              iconSize="text-sm"
-              textSize={3}
-            />
-
-            <IconLabelDetail
-              icon={faBurst}
-              text="12 Shots Fired"
-              iconSize="text-sm"
-              textSize={3}
-            />
-
-            <IconLabelDetail
               icon={faSchool}
               text="3rd Shooting"
               iconSize="text-sm"
               textSize={3}
             />
+
+            <IconLabelDetail
+              icon={faCircle}
+              text="12 Shots Fired"
+              iconSize="text-xs"
+              textSize={3}
+            />
+            <IconLabelDetail
+              icon={faCircle}
+              text="2 Victims Killed"
+              iconSize="text-xs"
+              textSize={3}
+            />
+            <IconLabelDetail
+              icon={faCircle}
+              text="3 Victims Injured"
+              iconSize="text-xs"
+              textSize={3}
+            />
           </div>
-          <div>
+          <div className="w-full">
             <h2>Summary</h2>
             <p className="text-justify">{selectedResult.Narrative}</p>
           </div>
