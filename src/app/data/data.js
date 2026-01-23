@@ -53,6 +53,111 @@ export const US_STATES = [
   { name: "Wyoming", code: "WY" },
 ];
 
+export const GUN_LAW = {
+  California: { strengthRank: 1, grade: "A", deathRank: 44, deathRate: 7.1 },
+  Connecticut: { strengthRank: 3, grade: "A", deathRank: 45, deathRate: 5.9 },
+  Hawaii: { strengthRank: 7, grade: "A", deathRank: 50, deathRate: 3.8 },
+  Illinois: { strengthRank: 6, grade: "A", deathRank: 30, deathRate: 12.6 },
+  Massachusetts: { strengthRank: 5, grade: "A", deathRank: 49, deathRate: 3.9 },
+  "New Jersey": { strengthRank: 2, grade: "A", deathRank: 48, deathRate: 4.1 },
+  "New York": { strengthRank: 4, grade: "A", deathRank: 47, deathRate: 4.4 },
+
+  Colorado: { strengthRank: 10, grade: "A-", deathRank: 21, deathRate: 15.6 },
+  Delaware: { strengthRank: 13, grade: "A-", deathRank: 34, deathRate: 12.1 },
+  Maryland: { strengthRank: 8, grade: "A-", deathRank: 38, deathRate: 11.8 },
+  Oregon: { strengthRank: 11, grade: "A-", deathRank: 25, deathRate: 14.4 },
+  "Rhode Island": {
+    strengthRank: 12,
+    grade: "A-",
+    deathRank: 46,
+    deathRate: 4.7,
+  },
+  Washington: { strengthRank: 9, grade: "A-", deathRank: 39, deathRate: 11.3 },
+
+  Virginia: { strengthRank: 14, grade: "B+", deathRank: 29, deathRate: 12.9 },
+  Minnesota: { strengthRank: 15, grade: "B", deathRank: 43, deathRate: 9.9 },
+  Pennsylvania: {
+    strengthRank: 16,
+    grade: "B",
+    deathRank: 35,
+    deathRate: 12.1,
+  },
+
+  Michigan: { strengthRank: 17, grade: "B-", deathRank: 33, deathRate: 12.1 },
+  Nevada: { strengthRank: 19, grade: "B-", deathRank: 15, deathRate: 17.7 },
+  "New Mexico": {
+    strengthRank: 20,
+    grade: "B-",
+    deathRank: 2,
+    deathRate: 27.0,
+  },
+  Vermont: { strengthRank: 18, grade: "B-", deathRank: 41, deathRate: 10.7 },
+
+  Maine: { strengthRank: 21, grade: "C+", deathRank: 37, deathRate: 12.0 },
+  Wisconsin: { strengthRank: 22, grade: "C", deathRank: 32, deathRate: 12.2 },
+
+  Florida: { strengthRank: 24, grade: "C-", deathRank: 28, deathRate: 13.2 },
+  Nebraska: { strengthRank: 23, grade: "C-", deathRank: 40, deathRate: 11.1 },
+  "North Carolina": {
+    strengthRank: 25,
+    grade: "C-",
+    deathRank: 19,
+    deathRate: 16.7,
+  },
+
+  Indiana: { strengthRank: 26, grade: "D-", deathRank: 16, deathRate: 17.5 },
+
+  Alabama: { strengthRank: 36, grade: "F", deathRank: 4, deathRate: 24.0 },
+  Alaska: { strengthRank: 39, grade: "F", deathRank: 3, deathRate: 24.8 },
+  Arizona: { strengthRank: 41, grade: "F", deathRank: 18, deathRate: 17.3 },
+  Arkansas: { strengthRank: 49, grade: "F", deathRank: 7, deathRate: 20.8 },
+  Georgia: { strengthRank: 40, grade: "F", deathRank: 14, deathRate: 17.8 },
+  Idaho: { strengthRank: 46, grade: "F", deathRank: 20, deathRate: 16.3 },
+  Iowa: { strengthRank: 35, grade: "F", deathRank: 36, deathRate: 12.0 },
+  Kansas: { strengthRank: 42, grade: "F", deathRank: 22, deathRate: 15.4 },
+  Kentucky: { strengthRank: 48, grade: "F", deathRank: 13, deathRate: 18.8 },
+  Louisiana: { strengthRank: 36, grade: "F", deathRank: 6, deathRate: 23.0 },
+  Mississippi: { strengthRank: 43, grade: "F", deathRank: 1, deathRate: 28.1 },
+  Missouri: { strengthRank: 46, grade: "F", deathRank: 11, deathRate: 19.8 },
+  Montana: { strengthRank: 45, grade: "F", deathRank: 8, deathRate: 20.3 },
+  "New Hampshire": {
+    strengthRank: 34,
+    grade: "F",
+    deathRank: 42,
+    deathRate: 10.3,
+  },
+  "North Dakota": {
+    strengthRank: 32,
+    grade: "F",
+    deathRank: 31,
+    deathRate: 12.5,
+  },
+  Ohio: { strengthRank: 30, grade: "F", deathRank: 24, deathRate: 14.8 },
+  Oklahoma: { strengthRank: 36, grade: "F", deathRank: 12, deathRate: 19.4 },
+  "South Carolina": {
+    strengthRank: 29,
+    grade: "F",
+    deathRank: 10,
+    deathRate: 19.9,
+  },
+  "South Dakota": {
+    strengthRank: 43,
+    grade: "F",
+    deathRank: 17,
+    deathRate: 17.4,
+  },
+  Tennessee: { strengthRank: 30, grade: "F", deathRank: 9, deathRate: 20.2 },
+  Texas: { strengthRank: 27, grade: "F", deathRank: 26, deathRate: 14.3 },
+  Utah: { strengthRank: 28, grade: "F", deathRank: 27, deathRate: 13.7 },
+  "West Virginia": {
+    strengthRank: 32,
+    grade: "F",
+    deathRank: 23,
+    deathRate: 15.3,
+  },
+  Wyoming: { strengthRank: 50, grade: "F", deathRank: 5, deathRate: 23.6 },
+};
+
 export const COUNTRY_SHOOTINGS = [
   { country: "United States of America", count: 288 },
   { country: "Mexico", count: 8 },

@@ -3,7 +3,27 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { ResponsiveBar } from "@nivo/bar";
-import { COUNTRY_SHOOTINGS } from "./data/data";
+import { COUNTRY_SHOOTINGS, GUN_LAW } from "./data/data";
+import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+
+const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
+
+// Map grades -> numeric strength for coloring
+const gradeToScore = (grade) => {
+  const map = {
+    A: 5,
+    "A-": 4.5,
+    "B+": 4,
+    B: 3.5,
+    "B-": 3,
+    "C+": 2.5,
+    C: 2,
+    "C-": 1.5,
+    "D-": 1,
+    F: 0,
+  };
+  return map[grade] ?? null;
+};
 
 export default function Home() {
   const [chartData, setChartData] = useState([]);
@@ -48,10 +68,10 @@ export default function Home() {
 
   return (
     <div className="main-side-padding font-cor">
-      <div className="w-full h-[75vh] flex items-center justify-center ">
+      <div className="w-full h-[76vh] flex items-center justify-center ">
         <div className="flex gap-16">
           <div className="flex items-center">
-            <div className="font-cor-sc relative w-sm h-56">
+            <div className="font-cor-sc relative w-sm min-h-96">
               <div className="text-4xl text-tertiary absolute left-8">The</div>
               <div className="text-7xl text-primary absolute top-6">
                 American
@@ -60,18 +80,29 @@ export default function Home() {
                 Tradition
               </div>
               <p className="absolute top-40 left-18 font-cor">
-                Mapping Gun Violence
+                An Interactive Database
                 <br />
-                in America’s Classrooms
+                of American School Shootings
+                <br />
+                based off David Reidman's work
               </p>
+
+              <button className="absolute left-18 bottom-16 w-fit text-secondary border border-secondary p-2 px-8 cursor-pointer text-lg mt-4 rounded-sm hover:bg-accent">
+                Browse School Shootings
+              </button>
+
+              <button className="absolute left-18 bottom-0 w-fit text-secondary border border-secondary p-2 px-8 cursor-pointer text-lg mt-4 rounded-sm hover:bg-accent">
+                Sign Petition
+              </button>
             </div>
           </div>
+
           <div className="w-full">
             <div
               className="relative overflow-x-hidden rounded-t-[50%]"
               style={{
-                width: 250,
-                height: 300,
+                width: 325,
+                height: 400,
               }}
             >
               <Image
@@ -239,7 +270,7 @@ export default function Home() {
           {COUNTRY_SHOOTINGS.map((c, i) => (
             <div
               key={i}
-              className={`flex items-center h-full border-0 border-accent ${i === 0 ? "row-span-4 flex-col" : ""}`}
+              className={`flex items-center h-full border-0 border-white ${i === 0 && "row-span-4 flex-col gap-4"}`}
             >
               <div
                 className={`relative overflow-x-hidden ${i === 0 ? "w-full" : "w-1/2"}`}
@@ -259,14 +290,14 @@ export default function Home() {
               </div>
 
               <div
-                className={`text-center w-1/2 ${i === 0 ? "text-xl" : "text-sm"}`}
+                className={`text-center ${i === 0 ? "text-lg w-full" : "text-sm  w-1/2 text-tertiary"}`}
               >
                 <div
-                  className={`font-cor-sc  ${i === 0 ? "text-8xl" : "text-4xl"}`}
+                  className={`font-cor-sc  ${i === 0 ? "text-8xl text-white" : "text-4xl text-white"}`}
                 >
                   {c.count}
                 </div>
-                {`${c.country}`}
+                {`${i === 0 ? `America had 288 school shootings from 2009-2018, the most of any country.` : c.country}`}
               </div>
             </div>
           ))}
