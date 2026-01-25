@@ -5,37 +5,41 @@ import {
   faLocationDot,
   faDove,
 } from "@fortawesome/free-solid-svg-icons";
+import ResultsNav from "./ResultsNav";
 
 export default function SearchResults({ results = [], setSelectedResult }) {
   return (
-    <div className="col-span-3  flex flex-col gap-4">
-      <p className="text-tertiary">
-        <span className="font-bold text-lg ">{results.length}</span> school
-        shootings found
-      </p>
-      {results.map((r, i) => (
-        <ResultCard
-          key={i}
-          school={r.School}
-          city={r.City}
-          state={r.State}
-          date={
-            r.Date
-              ? new Date(r.Date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })
-              : "Date unavailable"
-          }
-          summary={r.Summary}
-          numKilled={r.Victims_Killed ?? null}
-          onClick={() => {
-            console.log(r);
-            setSelectedResult(r);
-          }}
-        />
-      ))}
+    <div className="col-span-3 flex flex-col gap-4 bg-background h-screen overflow-x-scroll scrollbar-hide">
+      <div className="w-full">
+        <p className="text-tertiary">
+          <span className="font-bold text-lg ">{results.total}</span> school
+          shootings found
+        </p>
+        {(results?.data?.incidents ?? []).map((r, i) => (
+          <ResultCard
+            key={i}
+            school={r.School}
+            city={r.City}
+            state={r.State}
+            date={
+              r.Date
+                ? new Date(r.Date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : "Date unavailable"
+            }
+            summary={r.Summary}
+            numKilled={r.Victims_Killed ?? null}
+            onClick={() => {
+              console.log(r);
+              setSelectedResult(r);
+            }}
+          />
+        ))}
+      </div>
+      <ResultsNav />
     </div>
   );
 }

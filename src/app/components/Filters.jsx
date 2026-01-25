@@ -4,7 +4,7 @@ import { faDove } from "@fortawesome/free-solid-svg-icons";
 import { US_STATES } from "../data/data";
 import DateInput from "./DateInput";
 
-export default function Filters({ setFilterParam }) {
+export default function Filters({ setQueryParam, currentQueryParam }) {
   const CLEARED = {
     State: null,
     victimsKilled: null,
@@ -15,17 +15,15 @@ export default function Filters({ setFilterParam }) {
   // react-datepicker only accepts Date objects for its selected value
   const [startDateObj, setStartDateObj] = useState(null);
   const [endDateObj, setEndDateObj] = useState(null);
-
   const [pendingFilters, setPendingFilters] = useState(CLEARED); // stores the selected filter inputs before they're applied to the incidents
 
   // When apply button is clicked, applyFilters() updates the filter string
   // by creating a new paramerter obj and including values based on the values in pendingFilters.
   const applyFilters = (pf) => {
-    const params = new URLSearchParams(); // create a NEW query param object, so no need to delete old filters
+    const params = new URLSearchParams(); // preserve current filters
 
     // if pendingFilters contains values, include them in the query params
     if (pf.State) params.set("State", pf.State);
-
     if (pf.startDate) params.set("Date[gte]", pf.startDate);
     if (pf.endDate) params.set("Date[lte]", pf.endDate);
 
@@ -39,7 +37,7 @@ export default function Filters({ setFilterParam }) {
     } else if (pf.victimsKilled === "0") {
       params.set("Victims_Killed", "0");
     }
-    setFilterParam(params.toString()); // update the filter string used by the API
+    setQueryParam(params.toString()); // update the filter string used by the API
   };
 
   // When "Clear All" btn is clicked, clear all filters

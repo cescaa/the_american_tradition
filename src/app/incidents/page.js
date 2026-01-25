@@ -19,11 +19,13 @@ import { API_ENDPOINT } from "../data/data";
 export default function Incidents() {
   const [results, setResults] = useState([]); // all incidents from api data
   const [selectedResult, setSelectedResult] = useState([]); // user-selected incident
-  const [filterParam, setFilterParam] = useState(""); // string-formatted parameters for endpoint
+  const [queryParam, setQueryParam] = useState(""); // string-formatted parameters for endpoint
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
   const searchParams = useSearchParams(); // reads URL string of page
   const searchQry = searchParams.get("search") ?? ""; // gets value of search field
-
-  const paramsObj = new URLSearchParams(filterParam);
+  const paramsObj = new URLSearchParams(queryParam);
   if (searchQry) paramsObj.set("search", searchQry);
 
   const queryString = paramsObj.toString();
@@ -35,9 +37,10 @@ export default function Incidents() {
       fetch(url)
         .then((res) => res.json())
         .then((d) => {
-          setResults(d.data.incidents);
+          setResults(d);
           if (d.data.incidents.length > 0)
             setSelectedResult(d.data.incidents[0]);
+          console.log(d.data);
         });
       console.log("FILTERPARAM: ", url);
     },
@@ -59,9 +62,9 @@ export default function Incidents() {
           `,
         }}
       />
-      <main className="main-side-padding bg-background py-8 grid gap-4 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] items-start">
+      <main className="main-side-padding bg-background py-8 pb-0 grid gap-4 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] items-start">
         {/* COLUMN 1: Filters */}
-        <Filters setFilterParam={setFilterParam} />
+        <Filters setQueryParam={setQueryParam} currentQueryParam={queryParam} />
         {/* COLUMN 2: Search Results */}
         <SearchResults
           results={results}
