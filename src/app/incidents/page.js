@@ -1,7 +1,7 @@
 // https://nodejs-practice-delta.vercel.app/v1/incidents/?State=AZ
 
 "use client";
-import { useSearchParams } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Filters from "../components/Filters";
 import SearchResults from "../components/SearchResults";
 import Script from "next/script";
@@ -13,21 +13,22 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import IconLabelDetail from "../components/IconLabelDetail";
 import LocationMap from "../components/LocationMap";
+import ResultsNav from "../components/ResultsNav";
 import { useEffect, useState } from "react";
 import { API_ENDPOINT } from "../data/data";
 
 export default function Incidents() {
   const [results, setResults] = useState([]); // all incidents from api data
   const [selectedResult, setSelectedResult] = useState([]); // user-selected incident
-  const [queryParam, setQueryParam] = useState(""); // string-formatted parameters for endpoint
-  const [page, setPage] = useState(1);
-  const limit = 10;
+  const [queryParam, setQueryParam] = useState(""); // CURRENT string-formatted parameters for endpoint
 
   const searchParams = useSearchParams(); // reads URL string of page
   const searchQry = searchParams.get("search") ?? ""; // gets value of search field
-  const paramsObj = new URLSearchParams(queryParam);
-  if (searchQry) paramsObj.set("search", searchQry);
 
+  const paramsObj = new URLSearchParams(queryParam); // 1. init query params from existing query string
+  if (searchQry) paramsObj.set("search", searchQry); // 2. add search param if qry exists
+
+  //
   const queryString = paramsObj.toString();
   const url = queryString ? `${API_ENDPOINT}${queryString}` : API_ENDPOINT;
 
@@ -64,12 +65,11 @@ export default function Incidents() {
       />
       <main className="main-side-padding bg-background py-8 pb-0 grid gap-4 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] items-start">
         {/* COLUMN 1: Filters */}
-        <Filters setQueryParam={setQueryParam} currentQueryParam={queryParam} />
+        <Filters setQueryParam={setQueryParam} />
         {/* COLUMN 2: Search Results */}
-        <SearchResults
-          results={results}
-          setSelectedResult={setSelectedResult}
-        />
+        <SearchResults results={results} setSelectedResult={setSelectedResult}>
+          <ResultsNav setQueryParam={setQueryParam} queryParam={queryParam} />
+        </SearchResults>
         {/* COLUMN 3: Detailed info on selected incident */}
         <div className="sticky top-32 max-h-screen overflow-y-scroll scrollbar-hide w-full col-span-3 p-8 pb-16 flex flex-col gap-4 items-center border border-accent">
           <small className="w-full text-right text-tertiary">#1234567890</small>

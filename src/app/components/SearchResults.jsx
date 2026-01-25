@@ -5,9 +5,13 @@ import {
   faLocationDot,
   faDove,
 } from "@fortawesome/free-solid-svg-icons";
-import ResultsNav from "./ResultsNav";
 
-export default function SearchResults({ results = [], setSelectedResult }) {
+export default function SearchResults({
+  results = [],
+  setSelectedResult,
+
+  children,
+}) {
   return (
     <div className="col-span-3 flex flex-col gap-4 bg-background h-screen overflow-x-scroll scrollbar-hide">
       <div className="w-full">
@@ -39,7 +43,7 @@ export default function SearchResults({ results = [], setSelectedResult }) {
           />
         ))}
       </div>
-      <ResultsNav />
+      {children}
     </div>
   );
 }
