@@ -2,28 +2,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ResponsiveLine } from "@nivo/line";
-import { ResponsiveBar } from "@nivo/bar";
 import { COUNTRY_SHOOTINGS, GUN_LAW } from "./data/data";
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
-
-const geoUrl = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
-
-// Map grades -> numeric strength for coloring
-const gradeToScore = (grade) => {
-  const map = {
-    A: 5,
-    "A-": 4.5,
-    "B+": 4,
-    B: 3.5,
-    "B-": 3,
-    "C+": 2.5,
-    C: 2,
-    "C-": 1.5,
-    "D-": 1,
-    F: 0,
-  };
-  return map[grade] ?? null;
-};
+import { UsaHeatMap } from "./components/UsaGradeHeatMap";
 
 export default function Home() {
   const [chartData, setChartData] = useState([]);
@@ -301,6 +281,16 @@ export default function Home() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+      <div className="w-full flex">
+        <div className="w-1/2">
+          Gun Law Score
+          <UsaHeatMap metric="grade" />
+        </div>
+        <div className="w-1/2">
+          Death Rate
+          <UsaHeatMap metric="deathRate" />
         </div>
       </div>
     </div>
