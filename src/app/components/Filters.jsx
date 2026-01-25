@@ -1,10 +1,15 @@
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDove } from "@fortawesome/free-solid-svg-icons";
 import { US_STATES } from "../data/data";
 import DateInput from "./DateInput";
 
-export default function Filters({ setQueryParam }) {
+export default function Filters() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams(); // reads params of URL of page
+
   const CLEARED = {
     State: null,
     victimsKilled: null,
@@ -21,14 +26,18 @@ export default function Filters({ setQueryParam }) {
   // When apply button is clicked, applyFilters() updates the filter string
   // by creating a new paramerter obj and including values based on the values in pendingFilters.
   const applyFilters = (pf) => {
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(searchParams.toString());
 
     // if pendingFilters contains values, include them in the query params
-    if (pf.State) params.set("State", pf.State);
-    if (pf.startDate) params.set("Date[gte]", pf.startDate);
-    if (pf.endDate) params.set("Date[lte]", pf.endDate);
-    params.set("page", CLEARED.page); // when filters applied, go to first page
-    //setPage(CLEARED.page);
+    pf.State ? params.set("State", pf.State) : params.delete("State");
+    pf.startDate
+      ? params.set("Date[gte]", pf.startDate)
+      : params.delete("Date[gte]");
+    pf.endDate
+      ? params.set("Date[lte]", pf.endDate)
+      : params.delete("Date[lte]");
+
+    params.set("page", "1"); // when filters applied, go to first page
 
     // optional safety check
     if (pf.startDate && pf.endDate && pf.startDate > pf.endDate) {
@@ -37,16 +46,32 @@ export default function Filters({ setQueryParam }) {
 
     if (pf.victimsKilled === "gte1") {
       params.set("Victims_Killed[gte]", "1");
+      params.delete("Victims_Killed");
     } else if (pf.victimsKilled === "0") {
       params.set("Victims_Killed", "0");
+      params.delete("Victims_Killed[gte]");
+    } else {
+      params.delete("Victims_Killed[gte]");
+      params.delete("Victims_Killed");
     }
-    setQueryParam(params.toString()); // when query is set again, parent Incidents() re-renders
+
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   // When "Clear All" btn is clicked, clear all filters
   const clearFilters = () => {
     setPendingFilters(CLEARED);
-    applyFilters(CLEARED);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("State");
+    params.delete("Date[gte]");
+    params.delete("Date[lte]");
+    params.delete("Victims_Killed");
+    params.delete("Victims_Killed[gte]");
+    params.set("page", "1");
+
+    router.replace(`${pathname}?${params.toString()}`);
+
     setStartDateObj(null);
     setEndDateObj(null);
   };

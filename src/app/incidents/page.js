@@ -20,16 +20,14 @@ import { API_ENDPOINT } from "../data/data";
 export default function Incidents() {
   const [results, setResults] = useState([]); // all incidents from api data
   const [selectedResult, setSelectedResult] = useState([]); // user-selected incident
-  const [queryParam, setQueryParam] = useState(""); // CURRENT string-formatted parameters for endpoint
 
-  const searchParams = useSearchParams(); // reads URL string of page
-  const searchQry = searchParams.get("search") ?? ""; // gets value of search field
+  const searchParams = useSearchParams(); // reads params in url of page
+  // const searchQry = searchParams.get("search") ?? ""; // gets value of search field
+  //const paramsObj = new URLSearchParams(queryParam); // 1. init query params from existing query string
+  //if (searchQry) paramsObj.set("search", searchQry); // 2. add search param if qry exists
+  //  router.push(`/incidents?search=${encodeURIComponent(search)}`);
 
-  const paramsObj = new URLSearchParams(queryParam); // 1. init query params from existing query string
-  if (searchQry) paramsObj.set("search", searchQry); // 2. add search param if qry exists
-
-  //
-  const queryString = paramsObj.toString();
+  const queryString = searchParams.toString();
   const url = queryString ? `${API_ENDPOINT}${queryString}` : API_ENDPOINT;
 
   // when page renders, fetch all incidents from api
@@ -65,10 +63,10 @@ export default function Incidents() {
       />
       <main className="main-side-padding bg-background py-8 pb-0 grid gap-4 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] items-start">
         {/* COLUMN 1: Filters */}
-        <Filters setQueryParam={setQueryParam} />
+        <Filters />
         {/* COLUMN 2: Search Results */}
         <SearchResults results={results} setSelectedResult={setSelectedResult}>
-          <ResultsNav setQueryParam={setQueryParam} queryParam={queryParam} />
+          <ResultsNav />
         </SearchResults>
         {/* COLUMN 3: Detailed info on selected incident */}
         <div className="sticky top-32 max-h-screen overflow-y-scroll scrollbar-hide w-full col-span-3 p-8 pb-16 flex flex-col gap-4 items-center border border-accent">
