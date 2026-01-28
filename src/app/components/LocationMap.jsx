@@ -1,45 +1,37 @@
 "use client";
-
 import { useEffect, useRef } from "react";
 
 export default function LocationMap({
-  center = { lat: 41.594646, lng: -87.408331 }, // Fresno
+  center = { lat: 41.594646, lng: -87.408331 },
   zoom = 13,
-  mapId, // optional: your Cloud Map ID
-  className = "", // let parent pass extra classes
+  mapId,
+  className = "",
 }) {
+  const divRef = useRef(null);
   const mapRef = useRef(null);
+  const markerRef = useRef(null);
 
   useEffect(() => {
     let cancelled = false;
 
-    // 1) Ensure the Maps bootstrap has run and importLibrary exists.
     const waitForImportLibrary = () =>
       new Promise((resolve) => {
         const tick = () => {
-          if (
-            typeof window !== "undefined" &&
-            window.google?.maps?.importLibrary
-          ) {
-            resolve();
-          } else {
-            setTimeout(tick, 50);
-          }
+          if (window.google?.maps?.importLibrary) resolve();
+          else setTimeout(tick, 50);
         };
         tick();
       });
 
     (async () => {
       await waitForImportLibrary();
-
       const { Map } = await google.maps.importLibrary("maps");
       const { Marker } = await google.maps.importLibrary("marker");
       const { ColorScheme } = await google.maps.importLibrary("core");
 
-      if (cancelled || !mapRef.current) return;
+      if (cancelled || !divRef.current) return;
 
-      // 2) Build the map
-      const map = new Map(mapRef.current, {
+      mapRef.current = new Map(divRef.current, {
         center,
         zoom,
         mapId,
@@ -49,24 +41,37 @@ export default function LocationMap({
         streetViewControl: false,
       });
 
-      new Marker({ position: center, map });
+      markerRef.current = new Marker({ position: center, map: mapRef.current });
 
-      // 3) If the container was 0x0 at init (can happen in grids),
-      //    force a resize once it's laid out.
       requestAnimationFrame(() => {
-        if (!cancelled) google.maps.event.trigger(map, "resize");
+        if (!cancelled) google.maps.event.trigger(mapRef.current, "resize");
       });
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [center.lat, center.lng, zoom, mapId]);
+  }, []);
 
-  // IMPORTANT: explicit height, otherwise nothing renders
+  // update when center changes
+  useEffect(() => {
+    if (!mapRef.current || !markerRef.current) return;
+    if (center?.lat == null || center?.lng == null) return;
+
+    const pos = { lat: Number(center.lat), lng: Number(center.lng) };
+    mapRef.current.setCenter(pos);
+    markerRef.current.setPosition(pos);
+  }, [center?.lat, center?.lng]);
+
+  // optionally update zoom too
+  useEffect(() => {
+    if (!mapRef.current) return;
+    mapRef.current.setZoom(zoom);
+  }, [zoom]);
+
   return (
     <div
-      ref={mapRef}
+      ref={divRef}
       className={`w-full rounded flex-none h-108 ${className}`}
     />
   );
