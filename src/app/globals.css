@@ -22,7 +22,7 @@
 @layer base {
   :root {
     --background: #0c0c19;
-    --foreground: #f9f1f1;
+    --foreground: #90a3b0;
   }
 
   *,
@@ -38,7 +38,7 @@
   }
 
   h1 {
-    @apply text-4xl mb-8;
+    @apply text-4xl mb-8 text-white;
   }
 
   h2 {

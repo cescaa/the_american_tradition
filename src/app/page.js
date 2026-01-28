@@ -223,7 +223,7 @@ export default function Home() {
                   text: {
                     fontFamily: "Cormorant, serif",
                     fontSize: 16,
-                    fill: "white", // ← the actual color of tick labels
+                    fill: "#90a3b0", // ← the actual color of tick labels
                   },
                 },
                 legend: {
