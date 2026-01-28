@@ -3,47 +3,66 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { COUNTRY_SHOOTINGS, GUN_LAW } from "./data/data";
-import { UsaHeatMap } from "./components/UsaGradeHeatMap";
+import Link from "next/link";
+//import { UsaHeatMap } from "./components/UsaGradeHeatMap";
 
 export default function Home() {
   const [chartData, setChartData] = useState([]);
+
   useEffect(() => {
+    let cancelled = false;
+
     async function fetchIncidents() {
       const START_YEAR = 1974;
       const END_YEAR = 2024;
 
-      const res = await fetch(
-        `https://nodejs-practice-delta.vercel.app/v1/incidents/`,
-      );
+      let page = 1;
+      const limit = 1000;
+      const allIncidents = [];
 
-      if (!res.ok) throw new Error("Failed to fetch incidents");
+      while (true) {
+        const res = await fetch(
+          `https://nodejs-practice-delta.vercel.app/v1/incidents?page=${page}&limit=${limit}`,
+        );
 
-      const json = await res.json();
-      const incidents = json?.data?.incidents || [];
+        if (!res.ok) throw new Error("Failed to fetch incidents");
 
-      const incidentCountsPerYear = {};
-      for (let year = START_YEAR; year <= END_YEAR; year++) {
-        incidentCountsPerYear[year] = 0; // initialize incident count to 0
+        const json = await res.json();
+        const incidents = json?.data?.incidents ?? [];
+        allIncidents.push(...incidents);
+
+        const totalPages = json?.totalPages ?? 1;
+        if (page >= totalPages) break;
+        page += 1;
       }
 
-      incidents.forEach((incident) => {
-        const yr = incident.Year; // get year of each incident
-        if (yr >= START_YEAR && yr <= END_YEAR) incidentCountsPerYear[yr] += 1;
+      const counts = {};
+      for (let y = START_YEAR; y <= END_YEAR; y++) counts[y] = 0;
+
+      allIncidents.forEach((incident) => {
+        const year = Number(incident.Year);
+        if (Number.isFinite(year) && year >= START_YEAR && year <= END_YEAR) {
+          counts[year] += 1;
+        }
       });
 
-      // Convert to Nivo line format
       const lineSeries = [
         {
           id: "Incidents per year",
-          data: Object.keys(incidentCountsPerYear).map((year) => ({
-            x: Number(year), // year on x-axis
-            y: incidentCountsPerYear[year], // count on y-axis
+          data: Object.keys(counts).map((year) => ({
+            x: Number(year),
+            y: counts[year],
           })),
         },
       ];
-      setChartData(lineSeries);
+
+      if (!cancelled) setChartData(lineSeries);
     }
-    fetchIncidents();
+
+    fetchIncidents().catch(console.error);
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -67,13 +86,16 @@ export default function Home() {
                 based off David Reidman's work
               </p>
 
-              <button className="absolute left-18 bottom-16 w-fit text-secondary border border-secondary p-2 px-8 cursor-pointer text-lg mt-4 rounded-sm hover:bg-accent">
-                Browse School Shootings
-              </button>
-
-              <button className="absolute left-18 bottom-0 w-fit text-secondary border border-secondary p-2 px-8 cursor-pointer text-lg mt-4 rounded-sm hover:bg-accent">
-                Sign Petition
-              </button>
+              <Link href="/incidents">
+                <button className="absolute left-18 bottom-16 w-fit text-secondary border border-secondary p-2 px-8 cursor-pointer text-lg mt-4 rounded-sm hover:bg-accent">
+                  Browse School Shootings
+                </button>
+              </Link>
+              <Link href="/petition">
+                <button className="absolute left-18 bottom-0 w-fit text-secondary border border-secondary p-2 px-8 cursor-pointer text-lg mt-4 rounded-sm hover:bg-accent">
+                  Sign Petition
+                </button>
+              </Link>
             </div>
           </div>
 
@@ -129,7 +151,7 @@ export default function Home() {
                   background: "#14142A",
                   borderRadius: 2,
                   fontFamily: "Cormorant, serif",
-                  border: "1px solid #31597f",
+                  border: "1px solid #14142a",
                 }}
               >
                 <p>
@@ -250,20 +272,20 @@ export default function Home() {
           {COUNTRY_SHOOTINGS.map((c, i) => (
             <div
               key={i}
-              className={`flex items-center h-full border-0 border-white ${i === 0 && "row-span-4 flex-col gap-4"}`}
+              className={`flex items-center h-full border-0 border-white ${i === 0 && "row-span-4 flex-col gap-4 flex justify-center mr-8"}`}
             >
               <div
                 className={`relative overflow-x-hidden ${i === 0 ? "w-full" : "w-1/2"}`}
                 style={{
-                  height: i === 0 ? 200 : 100,
+                  height: i === 0 ? 160 : 80,
                 }}
               >
                 <Image
-                  src="/img/school-shooting-lockdowns.webp"
+                  src={`/img/flags/${c.flag}`}
                   alt="Example image"
                   fill
                   style={{
-                    objectFit: "cover", // fills the box, cropping overflow
+                    objectFit: "contain", // fills the box, cropping overflow
                     objectPosition: "0", // which part of the image to keep
                   }}
                 />
@@ -283,6 +305,7 @@ export default function Home() {
           ))}
         </div>
       </div>
+      {/* 
       <div className="w-full flex">
         <div className="w-1/2">
           Gun Law Score
@@ -292,7 +315,7 @@ export default function Home() {
           Death Rate
           <UsaHeatMap metric="deathRate" />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
