@@ -83,7 +83,7 @@ export default function Home() {
                 <br />
                 of American School Shootings
                 <br />
-                based off David Reidman's work
+                based off David Reidman&apos;s work
               </p>
 
               <Link href="/incidents">
@@ -132,12 +132,12 @@ export default function Home() {
           <p className="w-150">
             Shootings in American K–12 schools have surged from 16 incidents in
             1974 to 338 in 2024, the second highest level ever recorded, just
-            below 2023's record of 350. This 50-year span includes some of the
-            nation’s most notable attacks, such as Columbine (1999), Sandy Hook
-            (2012), and Parkland (2018). Recent years, particularly the early
-            2020s, show the greatest concentration of shootings, with hundreds
-            occurring annually. Texas, Florida, and California consistently
-            report the largest numbers.
+            below 2023&apos;s record of 350. This 50-year span includes some of
+            the nation&apos;s most notable attacks, such as Columbine (1999),
+            Sandy Hook (2012), and Parkland (2018). Recent years, particularly
+            the early 2020s, show the greatest concentration of shootings, with
+            hundreds occurring annually. Texas, Florida, and California
+            consistently report the largest numbers.
           </p>
         </div>
         <div className="min-h-140 w-1/2">
