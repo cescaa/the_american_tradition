@@ -18,14 +18,10 @@ import { useEffect, useState } from "react";
 import { API_ENDPOINT } from "../data/data";
 
 export default function Incidents() {
-  const [results, setResults] = useState([]); // all incidents from api data
-  const [selectedResult, setSelectedResult] = useState([]); // user-selected incident
+  const [results, setResults] = useState(null); // all incidents from api data
+  const [selectedResult, setSelectedResult] = useState({}); // user-selected incident
 
   const searchParams = useSearchParams(); // reads params in url of page
-  // const searchQry = searchParams.get("search") ?? ""; // gets value of search field
-  //const paramsObj = new URLSearchParams(queryParam); // 1. init query params from existing query string
-  //if (searchQry) paramsObj.set("search", searchQry); // 2. add search param if qry exists
-  //  router.push(`/incidents?search=${encodeURIComponent(search)}`);
 
   const queryString = searchParams.toString();
   const url = queryString ? `${API_ENDPOINT}${queryString}` : API_ENDPOINT;
@@ -37,14 +33,44 @@ export default function Incidents() {
         .then((res) => res.json())
         .then((d) => {
           setResults(d);
-          if (d.data.incidents.length > 0)
+          if (d?.data?.incidents.length > 0)
             setSelectedResult(d.data.incidents[0]);
-          console.log(d.data);
+          console.log("SELECTED RESULT!!!!");
         });
       console.log("FILTERPARAM: ", url);
     },
     [url], // re-fetch data with selected parameters when filters change
   );
+
+  const incidents = results?.data?.incidents ?? [];
+
+  const sameSchoolIncidents = selectedResult?.School
+    ? incidents.filter((r) => r.School === selectedResult.School)
+    : [];
+
+  const sortedByDate = sameSchoolIncidents
+    .slice()
+    .sort((a, b) => new Date(a.Date) - new Date(b.Date));
+
+  const occurrenceIndex = selectedResult?._id
+    ? sortedByDate.findIndex((r) => r._id === selectedResult._id)
+    : -1;
+
+  const occurrenceNumber = occurrenceIndex >= 0 ? occurrenceIndex + 1 : null;
+
+  function getOrdinalSuffix(n) {
+    if (n % 100 >= 11 && n % 100 <= 13) return "th";
+    switch (n % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
+  }
 
   return (
     <>
@@ -61,16 +87,20 @@ export default function Incidents() {
           `,
         }}
       />
-      <main className="main-side-padding bg-background py-8 pb-0 grid gap-4 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] items-start">
+      <main className="main-side-padding bg-background py-0 pb-0 grid gap-4 grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] items-start">
         {/* COLUMN 1: Filters */}
         <Filters />
         {/* COLUMN 2: Search Results */}
-        <SearchResults results={results} setSelectedResult={setSelectedResult}>
-          <ResultsNav />
+        <SearchResults
+          results={results ?? []}
+          setSelectedResult={setSelectedResult}
+          selectedResult={selectedResult}
+        >
+          <ResultsNav totalPages={results?.totalPages ?? 0} />
         </SearchResults>
         {/* COLUMN 3: Detailed info on selected incident */}
-        <div className="sticky top-32 max-h-screen overflow-y-scroll scrollbar-hide w-full col-span-3 p-8 pb-16 flex flex-col gap-4 items-center border border-accent">
-          <small className="w-full text-right text-tertiary">#1234567890</small>
+        <div className="sticky top-32 pt-8 max-h-screen overflow-y-scroll scrollbar-hide w-full col-span-3 p-8 pb-16 flex flex-col gap-4 items-center border-0 border-accent">
+          <small className="w-full text-right text-tertiary">{`ID: ${selectedResult._id}`}</small>
           <h1>{selectedResult.School}</h1>
           <div className="w-full grid grid-cols-3 gap-y-1">
             <IconLabelDetail
@@ -95,26 +125,44 @@ export default function Incidents() {
             />
             <IconLabelDetail
               icon={faSchool}
-              text="3rd Shooting"
+              text={`School's ${occurrenceNumber}${getOrdinalSuffix(occurrenceNumber)} incident`}
               iconSize="text-sm"
               textSize={3}
             />
 
             <IconLabelDetail
               icon={faCircle}
-              text="12 Shots Fired"
+              text={
+                selectedResult?.Shots_Fired >= 0
+                  ? selectedResult?.Shots_Fired === 1
+                    ? `1 Shot Fired`
+                    : `${selectedResult?.Shots_Fired} Shots Fired`
+                  : "Shots fired unknown"
+              }
               iconSize="text-xs"
               textSize={3}
             />
             <IconLabelDetail
               icon={faCircle}
-              text="2 Victims Killed"
+              text={
+                selectedResult?.Victims_Killed >= 0
+                  ? selectedResult?.Victims_Killed === 1
+                    ? `1 Victim Killed`
+                    : `${selectedResult?.Victims_Killed} Victims Killed`
+                  : "Victims killed unknown"
+              }
               iconSize="text-xs"
               textSize={3}
             />
             <IconLabelDetail
               icon={faCircle}
-              text="3 Victims Injured"
+              text={
+                selectedResult?.Victims_Injured >= 0
+                  ? selectedResult?.Victims_Injured === 1
+                    ? `1 Victim Injured`
+                    : `${selectedResult?.Victims_Injured} Victims Injured`
+                  : "Victims injured unknown"
+              }
               iconSize="text-xs"
               textSize={3}
             />
@@ -123,7 +171,16 @@ export default function Incidents() {
             <h2>Summary</h2>
             <p className="text-justify">{selectedResult.Narrative}</p>
           </div>
-          <LocationMap lati={selectedResult.LAT} longi={selectedResult.LNG} />
+          {selectedResult?.LAT && selectedResult?.LNG ? (
+            <LocationMap
+              center={{
+                lat: Number(selectedResult.LAT),
+                lng: Number(selectedResult.LNG),
+              }}
+            />
+          ) : (
+            <p className="text-tertiary">Location coordinates unavailable.</p>
+          )}
         </div>
       </main>
     </>

@@ -22,7 +22,7 @@
 @layer base {
   :root {
     --background: #0c0c19;
-    --foreground: #fff;
+    --foreground: #f9f1f1;
   }
 
   *,

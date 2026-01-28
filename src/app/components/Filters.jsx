@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDove } from "@fortawesome/free-solid-svg-icons";
 import { US_STATES } from "../data/data";
 import DateInput from "./DateInput";
+import { faLocationDot, faCircle } from "@fortawesome/free-solid-svg-icons";
 
 export default function Filters() {
   const router = useRouter();
@@ -121,14 +122,14 @@ export default function Filters() {
   };
 
   return (
-    <div className="col-span-1 flex flex-col gap-4">
+    <div className="col-span-1 flex flex-col gap-4 pt-8">
       <h2>Filters</h2>
       <Input
         label="State"
         inputType="text"
         dataOptions={US_STATES}
         onStateSelect={handleStateSelect}
-        selectedState={pendingFilters.State} // passes U.S. State or null so parent can clear input when "Clear All" is clicked
+        selectedState={pendingFilters.State}
       />
       <DateInput
         onStartDateSelect={handleStartDateSelect}
@@ -222,7 +223,10 @@ export function Input({
   return (
     <div className="relative">
       <div className="flex gap-1 items-center">
-        <FontAwesomeIcon icon={faDove} className={`text-primary text-sm`} />
+        <FontAwesomeIcon
+          icon={faLocationDot}
+          className={`text-primary text-sm`}
+        />
         <h4>{label}</h4>
       </div>
       <input
@@ -271,7 +275,10 @@ export function RadioInput({ onVictimSelect, selectedVictim }) {
 
   return (
     <div className="flex flex-col gap-1">
-      <h4>Victims Killed</h4>
+      <div className="flex gap-1 items-center">
+        <FontAwesomeIcon icon={faCircle} className={`text-primary text-xs`} />
+        <h4>Victims Killed</h4>
+      </div>
       {radioOptions.map((opt, i) => (
         <label className="flex items-center gap-1" key={i}>
           <input
