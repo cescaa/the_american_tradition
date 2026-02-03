@@ -14,10 +14,23 @@ export default function SearchResults({
 }) {
   const [selectedID, setSelectedID] = useState(null);
   useEffect(() => {
-    if (selectedResult?._id) {
-      setSelectedID(selectedResult._id);
-    }
+    const uid =
+      selectedResult?._id ??
+      selectedResult?.id ??
+      (selectedResult?.School && selectedResult?.Date && selectedResult?.State
+        ? `${selectedResult.School}-${selectedResult.Date}-${selectedResult.City ?? "unknown"}-${selectedResult.State}`
+        : null);
+
+    if (uid) setSelectedID(uid);
   }, [selectedResult]);
+
+  const incidentList = results?.data?.incidents ?? [];
+
+  const getUid = (r) =>
+    r?._id ??
+    r?.id ??
+    `${r?.School ?? "unknown"}-${r?.Date ?? "unknown"}-${r?.City ?? "unknown"}-${r?.State ?? "unknown"}`;
+
   return (
     <div className="col-span-3 flex flex-col bg-background h-screen pt-8">
       <p className="text-tertiary pb-4 border-b border-accent">
@@ -26,32 +39,35 @@ export default function SearchResults({
       </p>
       <div className="w-full flex flex-col gap-4 h-full overflow-x-scroll scrollbar-hide">
         <div className="w-full">
-          {(results?.data?.incidents ?? []).map((r, i) => (
-            <ResultCard
-              key={i}
-              school={r.School}
-              city={r.City}
-              state={r.State}
-              date={
-                r.Date
-                  ? new Date(r.Date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : "Date unavailable"
-              }
-              summary={r.Summary}
-              numKilled={r.Victims_Killed ?? null}
-              onClick={() => {
-                console.log(r);
-                setSelectedResult(r);
-                setSelectedID(r._id);
-              }}
-              selectedID={selectedID}
-              id={r._id}
-            />
-          ))}
+          {incidentList.map((r, i) => {
+            const uid = getUid(r);
+
+            return (
+              <ResultCard
+                key={uid}
+                id={uid}
+                selectedID={selectedID}
+                school={r.School}
+                city={r.City}
+                state={r.State}
+                date={
+                  r.Date
+                    ? new Date(r.Date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : "Date unavailable"
+                }
+                summary={r.Summary}
+                numKilled={r.Victims_Killed ?? null}
+                onClick={() => {
+                  setSelectedResult(r);
+                  setSelectedID(uid);
+                }}
+              />
+            );
+          })}
         </div>
         {children}
       </div>
