@@ -8,12 +8,12 @@ export default function MainMenu() {
 
   const menuItems = [
     { pageName: "Home", pathName: "/" },
-    { pageName: "Petition", pathName: "/petition" },
     { pageName: "Sources", pathName: "/sources" },
   ];
+  //     { pageName: "Petition", pathName: "/petition" },
 
   return (
-    <div className="main-side-padding w-full h-24 bg-background border-b border-primary py-4 pt-6 flex items-center gap-36 fixed z-50">
+    <div className="main-side-padding w-full h-24 bg-background border-b border-primary py-4 pt-6 flex items-center gap-30 fixed z-50">
       <SearchBar />
 
       <div className="flex-1 text-secondary">

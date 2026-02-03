@@ -17,7 +17,7 @@ export default function SearchBar() {
   }
   return (
     <form
-      className="w-3/4 flex items-center gap-4  bg-accent p-4 h-full"
+      className="w-5/6 flex items-center gap-4  bg-accent p-4 h-full"
       onSubmit={handleSubmit}
     >
       <FontAwesomeIcon

@@ -79,23 +79,25 @@ export default function Home() {
                 Tradition
               </div>
               <p className="absolute top-40 left-18 font-cor">
-                An Interactive Database
+                Exploring U.S. school shooting incidents
                 <br />
-                of American School Shootings
+                through data, visualization, and narrative,
                 <br />
-                based off David Reidman&apos;s work
+                based on the incidents compiled
+                <br />
+                by David Riedman.
               </p>
 
               <Link href="/incidents">
-                <button className="absolute left-18 bottom-16 w-fit text-secondary border border-secondary p-2 px-8 cursor-pointer text-lg mt-4 rounded-sm hover:bg-accent">
+                <button className="absolute left-18 bottom-12 w-fit text-secondary border border-secondary p-2 px-8 cursor-pointer text-lg mt-4 rounded-sm hover:bg-accent">
                   Browse School Shootings
                 </button>
               </Link>
-              <Link href="/petition">
+              {/*<Link href="/petition">
                 <button className="absolute left-18 bottom-0 w-fit text-secondary border border-secondary p-2 px-8 cursor-pointer text-lg mt-4 rounded-sm hover:bg-accent">
                   Sign Petition
                 </button>
-              </Link>
+              </Link>*/}
             </div>
           </div>
 
